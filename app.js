@@ -3,6 +3,9 @@ const express = require('express');
 require('dotenv').config()
 const mongoose = require('mongoose');
 
+// Routes Import 
+const userRoutes = require('./routes/user')
+
 // apps
 const app = express();
 
@@ -12,10 +15,10 @@ mongoose.connect(process.env.DATABASE, {
 
 
 
-// Url Route 
-app.get('/', (req, res) =>{
-    res.send("This site is working Updated once more");
-})
+// Url Route Middleware
+// prepend each route with /api
+app.use("/api",userRoutes); 
+
 
 //  module that loads environment variables from a .env file into process.env
 const port = process.env.PORT || 8000;
