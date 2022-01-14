@@ -1,8 +1,16 @@
 const express = require('express');
-const app = express();
-
 // This enables us to use the enviourment variables 
 require('dotenv').config()
+const mongoose = require('mongoose');
+
+// apps
+const app = express();
+
+// database 
+mongoose.connect(process.env.DATABASE, {
+}).then(() => console.log('Database Connected'));
+
+
 
 // Url Route 
 app.get('/', (req, res) =>{
