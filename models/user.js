@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // core nodejs module to hash password string
 const crypto = require('crypto');
+const { builtinModules } = require('module');
 
 const uuidv1 = reuqire('uuid/v1');
 
@@ -40,4 +41,35 @@ const userSchema = new mongoose.Schema({
         type:Array,
         default:[]
     },
-}, {timestamps:true})   
+}, {timestamps:true});
+
+
+// Virtual Field
+userSchema.virtual('password')
+.set((password) => {
+        this._password = password;
+        this.salt = uuidv1();
+        this.hashed_password = this.encryptPassword(password);
+})
+.get(() => {
+    return this._password;
+
+})
+
+userSchema.methods = {
+    encryptPassword: (password) =>{
+        if(!password) return '';
+        try {
+
+            return crypto.Hmac('sha1', this.salt)
+                        .update(password)
+                        .digest('hex')
+        }
+        catch (err){
+            return '';
+        }
+    } 
+}
+
+
+module.exports = mongoose.model("User", userSchema);
